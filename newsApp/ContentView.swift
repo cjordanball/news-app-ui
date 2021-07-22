@@ -8,10 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @ObservedObject var netMan = NetworkManager();
+    
     var body: some View {
-        Text("Goodbye, Cruel World!")
-            .padding()
+        NavigationView {
+            List(netMan.posts) { post in
+                if let safeURL = post.url {
+                    NavigationLink(destination: DetailView(url: safeURL)){
+                        HStack {
+                            Text("\(post.points)");
+                            Text("\(post.title)");
+                        }
+                    }
+                }
+            }
+            .navigationBarTitle("Latest News")
+        }
+        .onAppear{
+            self.netMan.fetchData();
+        }
     }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
